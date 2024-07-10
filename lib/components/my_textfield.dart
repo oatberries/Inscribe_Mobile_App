@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
@@ -7,6 +8,7 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final bool isEmailField;
   final bool isPasswordField;
+  final bool isUsernameField;
   final bool obscureText;
 
   const MyTextField({
@@ -16,6 +18,7 @@ class MyTextField extends StatelessWidget {
     required this.hintText,
     required this.obscureText,
     required this.isEmailField,
+    required this.isUsernameField,
     required this.isPasswordField
 
   });
@@ -30,34 +33,102 @@ class MyTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         validator: (value) {
-          if (value == null || value.isEmpty)
+          if (value == null || value.isEmpty || value.toString().trim().length == 0)
           {
-            return errorMsg;
+            return '• $hintText is required and cannot be a whitespace';
           }
 
           if (isEmailField){
+
+            String emailStr = value.toString().trim();
+
+            if (emailStr.length > 50)
+            {
+              return "• Email cannot exceed 50 characters";
+            }
              final bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                .hasMatch(value);
-                        if(!emailValid)
-                        {
-                          return "Please enter a valid email";
-                        }
+                                               .hasMatch(emailStr);
+            if(!emailValid)
+            {
+              return "• Invalid email format";
+            }
           }
           else if (isPasswordField) {
-              String passwordStr = value.toString();
+              String passwordStr = value.toString().trim();
+              String errMsg = "";
+
               if (passwordStr.length < 8){
-                return 'Password must contain 8 letters';
+                errMsg += "• Password must contain at least 8 characters.\n";
               }
+
+              if (passwordStr.length > 64)
+              {
+                errMsg += "• Password must not exceed 64 letters.\n";
+              }
+
+              if (!passwordStr.contains(RegExp(r'[A-Z]'))) {
+                errMsg += '• Password must contain an uppercase letter.\n';
+              }
+              // Contains at least one lowercase letter
+              if (!passwordStr.contains(RegExp(r'[a-z]'))) {
+                errMsg += '• Password must contain a lowercase letter.\n';
+              }
+              // Contains at least one digit
+              if (!passwordStr.contains(RegExp(r'[0-9]'))) {
+                errMsg += '• Password must contain a digit.\n';
+              }
+              // Contains at least one special character
+              if (!passwordStr.contains(RegExp(r'[@$!%*?&_-]'))) {
+                errMsg += '• Password must contain a special character.\n';
+              }
+
+              // If there is no errors
+              if (errMsg.isEmpty)
+              {
+                return null;
+              }
+
+              return errMsg;
+              // final bool validPassword = RegExp(
+              //   r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&_-]{8,}$")
+              //   .hasMatch(passwordStr);
+
+              // if (!validPassword)
+              // {
+              //   return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+          }
+          else if (isUsernameField)
+          {
+            String usernameStr = value.toString().trim();
+            final bool validField = RegExp(r"^[a-zA-Z][;a-zA-Z0-9-_]{0,49}$").hasMatch(usernameStr);
+
+            if (usernameStr.length > 50){      
+              return '• Username must not exceed 50 characters in length';
+            }
+
+            if (!validField){
+              return '• Username must start with a letter and can only contain letters, numbers, hyphens, and underscores';
+            }
+            
           }
           else {
-            final bool validField = RegExp(r'^[a-zA-Z0-9&%=]+$').hasMatch(value);
-            if (!validField){
-              return 'Field must only contain numbers and letters';
+
+            String displayNameText = value.toString().trim();
+            final bool isValidName = RegExp(r"^[A-Za-z '-]{1,50}$").hasMatch(displayNameText);
+            if (displayNameText.length > 50)
+            {
+              return "• $hintText cannot exceed 50 characters";
+            }
+
+            if (!isValidName)
+            {
+              return "• $hintText can only contain letters, spaces, hypens, and apostrophes";
             }
           }
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 5,
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
           enabledBorder: const OutlineInputBorder(

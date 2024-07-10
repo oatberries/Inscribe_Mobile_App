@@ -3,7 +3,7 @@ import 'package:myapp/components/my_button.dart';
 import 'package:myapp/components/my_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -59,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'First Name',
                       isEmailField: false,
                       isPasswordField: false,
+                      isUsernameField: false,
                       obscureText: false,
                     ),
             
@@ -71,6 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'Last Name',
                       isEmailField: false,
                       isPasswordField: false,
+                      isUsernameField: false,
                       obscureText: false,
                     ),
             
@@ -82,6 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       errorMsg: 'Please enter your last name',
                       hintText: 'Email',
                       isEmailField: true,
+                      isUsernameField: false,
                       isPasswordField: false,
                       obscureText: false,
                     ),
@@ -93,6 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: usernameController,
                       errorMsg: 'Please enter a username',
                       hintText: 'Username',
+                      isUsernameField: true,
                       isEmailField: false,
                       isPasswordField: false,
                       obscureText: false,
@@ -101,11 +105,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 12),
             
                     // Password
-
                     MyTextField(
                       controller: passwordController,
                       errorMsg: 'Please enter a password',
                       hintText: 'Password',
+                      isUsernameField: false,
                       isEmailField: false,
                       isPasswordField: true,
                       obscureText: true,
@@ -115,13 +119,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 12),
             
                     // Confirm Password
-
                     SizedBox(
                      width: 300, 
                      child: TextFormField(
                       controller: confirmPasswordController,
                       obscureText: true,
                       decoration: InputDecoration(
+                      errorMaxLines: 2,
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                       enabledBorder: const OutlineInputBorder(
@@ -137,19 +141,28 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                       validator: (value) {
                         if (value == null || value.isEmpty){
-                            return 'Please confirm your password';
+                            return '• Confirm Password is required and cannot be a whitespace';
+                        }
+
+                        if (value.toString().length < 8)
+                        {
+                          return "• Confirm Password must contain at least 8 letters";
+                        }
+
+                        if(value.toString().length > 64)
+                        {
+                          return "• Confirm Password must not exceed 64 characters";
                         }
 
                         if (value.toString() != passwordController.text)
                         {
-                            return "Passwords do not match";
+                            return "• Passwords do not match";
                         }
                        return null;
                       },
                      ),
                    ),
                   
-            
                     const SizedBox(height: 12),
 
                     // Create Account
@@ -164,21 +177,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                          Text('Already registered?'),
                           SizedBox(width: 4),
-                          Text(
-                            'Login in here',
-                            style: TextStyle(
+                          TextButton(onPressed: null, 
+                            child: Text(
+                              'Login in here',
+                              style: TextStyle(
                               color: Colors.blue, fontWeight: FontWeight.bold
+                              ),
                             ),
                           )
                         ],
                       ),
                      )
-            
                   ],
                 ),
               )
-              
-              ]),
+            ]),
           ),
         ),
       ),
