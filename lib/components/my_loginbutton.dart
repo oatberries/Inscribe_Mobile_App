@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inscribevs/screens/LoginScreen.dart';
 import 'package:inscribevs/screens/home_page.dart';
 class MyLoginButton extends StatelessWidget {
 
