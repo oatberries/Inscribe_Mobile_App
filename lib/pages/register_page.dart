@@ -221,12 +221,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     
                       const SizedBox(height: 12),
       
-                      // Create Account
-                      //YOU DONT MAKE THE HTTP CALL FIRST, FIRST YOU ENTER INPUT
-                      //THEN  YOU SUBMIT, THEN IF CLIENT SIDE VALIDATION PASSES,
-                      //THEN IT MAKE S THE HTTP REQUEST, OTHERWISE IT DOESNT MAKE THE RQUEST!!
-                      MyButton(onPressed:  _login, form: form),
-                      //MyButton(onPressed:  _login),
+                      //MyButton(onPressed:  _login, form: form),
+                      MyButton(onPressed:  _login),
               
                       const SizedBox(height: 24),
       
