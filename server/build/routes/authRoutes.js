@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const sanitzeRequest_1 = __importDefault(require("../middlewares/sanitzeRequest"));
+const registerController_1 = __importDefault(require("../controllers/auth/registerController"));
+const verifyAccountController_1 = __importDefault(require("../controllers/auth/verifyAccountController"));
+const loginController_1 = __importDefault(require("../controllers/auth/loginController"));
+const requestPasswordResetController_1 = __importDefault(require("../controllers/auth/requestPasswordResetController"));
+const redirectToPasswordResetController_1 = __importDefault(require("../controllers/auth/redirectToPasswordResetController"));
+const resetPasswordController_1 = __importDefault(require("../controllers/auth/resetPasswordController"));
+const authRouter = express_1.default.Router();
+authRouter.post('/register', sanitzeRequest_1.default, registerController_1.default);
+authRouter.get('/verify-account/:token', sanitzeRequest_1.default, verifyAccountController_1.default);
+authRouter.post('/login', sanitzeRequest_1.default, loginController_1.default);
+authRouter.post('/request-password-reset', sanitzeRequest_1.default, requestPasswordResetController_1.default);
+authRouter.get('/redirect-to-password-reset/:token', redirectToPasswordResetController_1.default);
+authRouter.post('/reset-password/:token', resetPasswordController_1.default);
+exports.default = authRouter;
