@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+import 'package:inscribevs/pages/home_page.dart';
+
+class MyButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  //void log(message) => print(message);
+  //final String text;
+  //final form;
+
+  //const MyButton({required this.onPressed, required this.form, super.key
+ //});
+const MyButton({required this.onPressed, super.key});
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+   /*    onTap: ()
+        {
+          if (form.currentState!.validate()){
+            log('Success');
+          }
+        },*/
+      child: Container(
+        width: 300,
+        height: 40,
+        //padding:const EdgeInsets.all(10),
+        margin:const EdgeInsets.symmetric(horizontal: 25),
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(82,183,136,1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(backgroundColor: Color.fromRGBO(82, 183, 136, 1)),
+          onPressed: onPressed,
+       /*   onPressed:(){
+             Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          },*/
+          child: const Center(
+            child: Text(
+              "Create Account",
+              style: TextStyle(
+              color:Colors.white,
+              fontSize: 14
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
