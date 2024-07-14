@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:inscribevs/components/my_registerbutton.dart';
-import 'package:inscribevs/components/my_textfield.dart';
+import 'package:inscribevs/components/register/my_registerbutton.dart';
+import 'package:inscribevs/components/register/my_textfield.dart';
 //import 'package:inscribevs/screens/LoginScreen.dart';
 import 'package:inscribevs/pages/login_page.dart';
 

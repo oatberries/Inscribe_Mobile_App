@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:inscribevs/components/my_forgotpasswordbutton.dart';
+import 'package:inscribevs/components/login/my_forgotpasswordbutton.dart';
 import 'dart:convert';
-import 'package:inscribevs/components/my_loginbutton.dart';
-import 'package:inscribevs/components/my_signupbutton.dart';
-import 'package:inscribevs/components/my_logintextfield.dart';
+import 'package:inscribevs/components/login/my_loginbutton.dart';
+import 'package:inscribevs/components/login/my_signupbutton.dart';
+import 'package:inscribevs/components/login/my_logintextfield.dart';
 import 'package:inscribevs/pages/home_page.dart';
 
 //class LoginScreen extends StatefulWidget{
