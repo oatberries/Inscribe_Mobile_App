@@ -39,6 +39,9 @@ dependencies:
   google_nav_bar: ^5.0.6
   http: ^1.2.1
 
+  flutter_quill: any
+  flutter_secure_storage: ^4.2.1
+  jwt_decoder: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
