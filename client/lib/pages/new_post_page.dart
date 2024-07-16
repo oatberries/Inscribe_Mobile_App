@@ -1,8 +1,14 @@
 
 import 'package:flutter/material.dart';
+import 'package:inscribevs/authentication/data_service.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:inscribevs/authentication/data_service.dart' as data_service;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:inscribevs/pages/home.dart';
 
 class NewPostPage extends StatefulWidget {
+  
   const NewPostPage({super.key});
 
   @override
@@ -10,14 +16,44 @@ class NewPostPage extends StatefulWidget {
 }
 
 class _NewPostPageState extends State<NewPostPage> {
-  
-  Future <void> _newPost() async{
-    
 
+  final secureStorage = DataService.getInstance;
+   String content = '';
+   
+  
+  Future <void> _createNewPost() async{
+
+    String myToken = await secureStorage.read('token');
+    const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/new-post';
+
+
+    final response = await http.post(
+      Uri.parse(URL),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $myToken"
+      },
+      body: json.encode(<String,dynamic> {
+        'post' : '$content'
+      }),
+    );
+
+    final responseData = jsonDecode(response.body);
+    print('Token : ${myToken}');
+    print(responseData);
+
+    if (response.statusCode == 201) {
+      Navigator.pop(context);
+      print('Registration successful: ${responseData}');
+
+    } else {
+      print('Registration failed: ${responseData}');
+    }
   }
   @override
   Widget build(BuildContext context) { 
   
+    // Display warning upon tapping the exit button
     Future <bool?> _showBackDialog() {
       return showDialog(
         context: context, 
@@ -76,7 +112,15 @@ class _NewPostPageState extends State<NewPostPage> {
               width: 60,
               child: MaterialButton(
                 // Verify and Create Post Page
-                onPressed: () {},
+                onPressed: () {
+                  String postContent = _controller.document.toPlainText().trim();
+                  if (!postContent.isEmpty && postContent.length < 250) {
+                    content = _controller.document.toPlainText().trim();
+                    _createNewPost();
+                  } else {
+                    // display errors
+                  }
+                },
                 color: const Color.fromRGBO(82, 183, 136, 1),
                 shape:const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(

@@ -1,7 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class DataService {
-  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
+  static final DataService _instance = DataService._internal();
+  FlutterSecureStorage secureStorage = new FlutterSecureStorage();
+
+  // Initizlize the flutter secure sctr
+  DataService._internal() {
+    secureStorage = const FlutterSecureStorage();
+  }
+
+  static DataService get getInstance => _instance;
+
+  ///Grab token method
+  // Future<String?> TryGetItem(String key) async {
+  //   try {
+  //     return await secureStorage.read(key: key);
+  //   } catch (error) {
+  //     print(error);
+  //     return null;
+  //   }
+  // }
+
+  Future read(String key) async {
+    return secureStorage.read(key: key);
+  }
+
 
   // I was following a youtube video for this lol
 
@@ -9,7 +35,7 @@ class DataService {
   Future<bool?> addItem(String key, String value) async{
     try {
       // if 
-      if(await secureStorage.read(key: key) == null) {
+      if (await secureStorage.read(key: key) == null) {
         await secureStorage.write(key: key, value: value);
         return true;
       } else {
@@ -21,13 +47,7 @@ class DataService {
     }
   }
 
-  ///Grab token method
-  Future<String?> TryGetItem(String key) async {
-    try {
-      return await secureStorage.read(key: key);
-    } catch (error) {
-      print(error);
-      return null;
-    }
+  void delete() async{
+    return await secureStorage.deleteAll();
   }
 }

@@ -10,8 +10,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Create Local Side Storage
-  DataService _dataService = DataService();
-  runApp(MyApp(token: await _dataService.TryGetItem("token")));
+  final secureStorage = await DataService.getInstance;
+  runApp(MyApp(token: await secureStorage.read("token")));
 }
 
 @override
@@ -30,9 +30,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
       //routes: Routes.getroutes,
-      // Checks whether the JWT token has expired or token doesn't exist
-      home: (JwtDecoder.isExpired(token) == false || token == null)?HomePage(token: token):LoginPage(),
-      // home: LoginPage(),
+      // Checks whether the JWT token has expired and token does exit
+      home: (JwtDecoder.isExpired(token) == false && token != null)?HomePage(token: token):LoginPage(),
+      //home: LoginPage(),
       routes: <String,WidgetBuilder> {
       //'/homepage' : (BuildContext context) => const UserHome(),
       '/newpostpage' : (BuildContext context) => const NewPostPage(),
