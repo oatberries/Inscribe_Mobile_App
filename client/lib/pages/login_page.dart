@@ -22,7 +22,7 @@ class LoginPage extends StatefulWidget{
 class _LoginPageState extends State<LoginPage> {
 
   // Local Token Storage
-  DataService _dataService = DataService();
+  final secureStorage = DataService.getInstance;
 
   //Holds the values types in by the user
   final TextEditingController usernameController = TextEditingController();
@@ -49,15 +49,19 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       //if the response is ok
-      if(response.statusCode == 200){
+      if (response.statusCode == 200){
+        print("Token Before Deletion ${await secureStorage.read('token')}\n");
+        secureStorage.delete();
+         print("Token After ${await secureStorage.read('token')}");
 
         final responseData = jsonDecode(response.body);
         var myToken = responseData['token'];
-        await _dataService.addItem("token", myToken);
+        await secureStorage.addItem('token', myToken);
+        print('Registration successful and here is token :${await secureStorage.read('token')}');
 
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => HomePage(token: myToken)),
-        );
+       // Navigator.push(context,
+        //MaterialPageRoute(builder: (context) => HomePage(token: myToken)),
+       // );
 
 
 
