@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:inscribevs/components/login/my_forgotpasswordbutton.dart';
 import 'dart:convert';
+import 'package:inscribevs/authentication/data_service.dart';
 import 'package:inscribevs/components/login/my_loginbutton.dart';
 import 'package:inscribevs/components/login/my_signupbutton.dart';
 import 'package:inscribevs/components/login/my_logintextfield.dart';
 import 'package:inscribevs/pages/home_page.dart';
+
 
 //class LoginScreen extends StatefulWidget{
 class LoginPage extends StatefulWidget{
@@ -25,6 +27,9 @@ class _LoginPageState extends State<LoginPage> {
     return const body: Center(child: CircularProgressIndicator(),)
     },
   );*/
+
+  // Local Token Storage
+  final secureStorage = DataService.getInstance;
 
   //Holds the values types in by the user
   final TextEditingController usernameController = TextEditingController();
@@ -51,14 +56,23 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       //if the response is ok
-      if(response.statusCode == 200){
+      if (response.statusCode == 200){
+        print("Token Before Deletion ${await secureStorage.read('token')}\n");
+        secureStorage.delete();
+         print("Token After ${await secureStorage.read('token')}");
 
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      
         final responseData = jsonDecode(response.body);
-        print('Registration successful: ${responseData}');
+        var myToken = responseData['token'];
+        await secureStorage.addItem('token', myToken);
+        print('Registration successful and here is token :${await secureStorage.read('token')}');
+
+       // Navigator.push(context,
+        //MaterialPageRoute(builder: (context) => HomePage(token: myToken)),
+       // );
+
+
+
+        // print('Registration successful: Token: ${token}');
 
       }
       else{

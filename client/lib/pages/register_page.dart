@@ -6,6 +6,7 @@ import 'package:inscribevs/components/register/my_textfield.dart';
 //import 'package:inscribevs/screens/LoginScreen.dart';
 import 'package:inscribevs/pages/login_page.dart';
 
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
