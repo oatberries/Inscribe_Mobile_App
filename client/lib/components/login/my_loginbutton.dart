@@ -13,10 +13,10 @@ class MyLoginButton extends StatelessWidget {
     return Container(
       height: 45,
 
-      margin: const EdgeInsets.symmetric(horizontal: 50),
+      margin: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color: Color.fromRGBO(82,183,136,1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
        ),
         child: TextButton(
            style: TextButton.styleFrom(backgroundColor: Color.fromRGBO(82,183,136,1)),

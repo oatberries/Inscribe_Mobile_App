@@ -18,6 +18,13 @@ class LoginPage extends StatefulWidget{
 }
 
 class _LoginPageState extends State<LoginPage> {
+/*
+  showDialog(
+    context: context,
+    builder: (context){
+    return const body: Center(child: CircularProgressIndicator(),)
+    },
+  );*/
 
   //Holds the values types in by the user
   final TextEditingController usernameController = TextEditingController();
@@ -109,38 +116,28 @@ class _LoginPageState extends State<LoginPage> {
                       isUsernameField: false,
                       isPasswordField: true,            
                   ),
-             
+
+                  const SizedBox(height: 10),
+                  ForgotPasswordbutton(),
+
+                  const SizedBox(height: 20),
+                  MyLoginButton(onPressed: _login),
+
+                  const SizedBox(height: 10),
+                  Signupbutton(),
+                  /*
                   //Sign in button
                   const SizedBox(height: 10),
                   MyLoginButton(onPressed: _login),
-            
-
 
                   //Forgot Password?
                   const SizedBox(height:10),
-                     //      ElevatedButton(
-                /*    onPressed: () {
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const ))
-                    },*/
-                    //child: 
-                    ForgotPasswordbutton(),
-                 /*   const Text(
-                        'Forgot Password?',
-                         style: TextStyle(
-                         color: Colors.black,
-                         fontSize: 16,
-                         fontWeight: FontWeight.normal
-                      )
-                    ),*/
-                 // ),
-              
-
+                  ForgotPasswordbutton(),
 
                   //sign up button
-                  //const SizedBox(height: 2),
+                  //const SizedBox(height: 10),
                   Signupbutton(),
-               
+                  */
                   ],
                 ),
               ),

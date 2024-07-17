@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 //import 'package:inscribevs/routes/routes.dart';
 import 'package:inscribevs/pages/login_page.dart';
-import 'package:inscribevs/pages/register_page.dart';
 
 
 void main() {
