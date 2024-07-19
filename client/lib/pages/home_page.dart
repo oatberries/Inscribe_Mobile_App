@@ -10,7 +10,7 @@ import 'package:inscribevs/pages/settings_page.dart';
 class HomePage extends StatefulWidget {
   final token;
   const HomePage({required this.token,super.key});
-
+  
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -39,11 +39,11 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 9),
           child: GNav(
             onTabChange: (index) {
-            // Naviages to the page based on index
+            // Navigates to the page based on index
               if (index != 2) {
               setState(() {
                 _currentPageIndex = index;
-                
+
               });
               } else {
                 index = _currentPageIndex;
@@ -80,8 +80,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),
-      
+      ),   
     );
   }
 }
