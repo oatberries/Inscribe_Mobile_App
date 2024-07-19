@@ -57,18 +57,17 @@ class _LoginPageState extends State<LoginPage> {
 
       //if the response is ok
       if (response.statusCode == 200){
-        print("Token Before Deletion ${await secureStorage.read('token')}\n");
-        secureStorage.delete();
-         print("Token After ${await secureStorage.read('token')}");
+        // print("Token Before Deletion ${await secureStorage.read('token')}\n");
+        // secureStorage.delete();
+        //  print("Token After ${await secureStorage.read('token')}");
 
         final responseData = jsonDecode(response.body);
         var myToken = responseData['token'];
-        await secureStorage.addItem('token', myToken);
+        secureStorage.addItem('token', myToken);
+        String tokenStr = await secureStorage.read('token');
         print('Registration successful and here is token :${await secureStorage.read('token')}');
 
-       // Navigator.push(context,
-        //MaterialPageRoute(builder: (context) => HomePage(token: myToken)),
-       // );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(token: tokenStr)),);
 
 
 

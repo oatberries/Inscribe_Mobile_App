@@ -18,7 +18,7 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
 
   final secureStorage = DataService.getInstance;
-   String content = '';
+  String content = '';
    
   
   Future <void> _createNewPost() async{
@@ -39,8 +39,6 @@ class _NewPostPageState extends State<NewPostPage> {
     );
 
     final responseData = jsonDecode(response.body);
-    print('Token : ${myToken}');
-    print(responseData);
 
     if (response.statusCode == 201) {
       Navigator.pop(context);
@@ -90,7 +88,6 @@ class _NewPostPageState extends State<NewPostPage> {
           bottom: BorderSide(
             color: Colors.black26, 
             width: 1,
-            
           )
         ),
 
@@ -153,10 +150,10 @@ class _NewPostPageState extends State<NewPostPage> {
           }),
           child: IconButton(
             onPressed: () async{
-                 final bool shouldPop = await _showBackDialog() ?? false;
-            if (context.mounted  && shouldPop) {
-              Navigator.pop(context);
-            }
+                final bool shouldPop = await _showBackDialog() ?? false;
+                if (context.mounted  && shouldPop) {
+                  Navigator.pop(context);
+                }
              
             },
             icon: const Icon(Icons.close),
