@@ -3,18 +3,19 @@ import 'package:inscribevs/authentication/data_service.dart';
 import 'package:inscribevs/components/like_button.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:inscribevs/pages/edit_post.dart';
+// import 'package:inscribevs/pages/edit_post.dart';
+import 'package:inscribevs/globals.dart' as globals;
 
 class InscribePost extends StatefulWidget {
   final Function updateStartPage;
   final String username;
   final String post_content;
   final int num_of_likes;
-  final bool did_i_like_post;
+  //final bool did_i_like_post;
   final postId;
   //final String userId;
 
-  InscribePost({required this.updateStartPage, required this.username,required this.post_content,required this.num_of_likes,required this.did_i_like_post,required this.postId,super.key});
+  InscribePost({required this.updateStartPage, required this.username,required this.post_content,required this.num_of_likes,required this.postId,super.key});
 
   @override
   State<InscribePost> createState() => _InscribePostState();
@@ -29,9 +30,9 @@ class _InscribePostState extends State<InscribePost> {
     DataService secureStorage = DataService.getInstance;
     String token = await secureStorage.read('token');
 
-     const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/delete-post';
+      String URL = '${globals.base_url}/posts/${widget.postId}';
 
-    var response = await http.post(
+    var response = await http.delete(
         Uri.parse(URL),
         headers: {
         "Content-Type": "application/json",
@@ -84,22 +85,8 @@ class _InscribePostState extends State<InscribePost> {
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
                           child: Column(children: [
-                              SizedBox(
-                                width: 275,
-                                child: ElevatedButton.icon(
-                                  // Edit Post
-                                  onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditPostPage(postId: widget.postId)));
-                                  },
-                                  icon: Icon(Icons.edit), 
-                                  label: Text('Edit Post'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white70
-                                  )
-                                  ),
-                              ),
                                 
-                                 SizedBox(
+                              SizedBox(
                                 width: 275,
                                 child: ElevatedButton.icon(
                                   // Edit Post
@@ -127,7 +114,7 @@ class _InscribePostState extends State<InscribePost> {
                                         ],
                                       );
 
-    });
+                                     });
                                   },
                                   icon: Icon(Icons.delete_forever), 
                                   label: Text('Delete'),
@@ -150,8 +137,6 @@ class _InscribePostState extends State<InscribePost> {
                                     
                                     ),
                                 )
-                          
-                          
                           ],),
                         ),
                       ),
@@ -172,9 +157,7 @@ class _InscribePostState extends State<InscribePost> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
            
-
-
-            LikeButtonWidget(isLiked: widget.did_i_like_post, likeCount: widget.num_of_likes, postId: widget.postId),
+            LikeButtonWidget(likeCount: widget.num_of_likes, postId: widget.postId,),
             const SizedBox(width: 10),
             IconButton(
               // Go to PostPage Comments

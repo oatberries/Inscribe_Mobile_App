@@ -5,6 +5,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:inscribevs/globals.dart' as globals;
 
 class NewPostPage extends StatefulWidget {
   
@@ -22,7 +23,7 @@ class _NewPostPageState extends State<NewPostPage> {
   Future <void> _createNewPost() async{
 
     String myToken = await secureStorage.read('token');
-    const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/new-post';
+    String URL = '${globals.base_url}/post';
 
 
     final response = await http.post(

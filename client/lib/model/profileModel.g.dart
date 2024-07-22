@@ -12,9 +12,10 @@ ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) => ProfileModel(
       username: json['username'] as String?,
       email: json['email'] as String?,
       bio: json['bio'] as String? ?? '',
-      verified: json['verified'] as bool?,
-      following_count: (json['following_count'] as num?)?.toInt(),
-      follower_count: (json['follower_count'] as num?)?.toInt(),
+      profile_image: json['profile_image'] as String? ?? '',
+      created_at: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$ProfileModelToJson(ProfileModel instance) =>
@@ -24,7 +25,6 @@ Map<String, dynamic> _$ProfileModelToJson(ProfileModel instance) =>
       'username': instance.username,
       'email': instance.email,
       'bio': instance.bio,
-      'verified': instance.verified,
-      'following_count': instance.following_count,
-      'follower_count': instance.follower_count,
+      'profile_image': instance.profile_image,
+      'created_at': instance.created_at?.toIso8601String(),
     };

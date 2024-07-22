@@ -54,9 +54,7 @@ class _EditProfileState extends State<EditProfile> {
                         bottom: BorderSide(
                           width: 1
                         ),
-                        // top: BorderSide(
-                        //   width: 1
-                        // ),
+                       
                       )
                     ),
                     child: const SizedBox(height: 25)),
