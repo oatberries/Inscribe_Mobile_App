@@ -9,7 +9,7 @@ import 'package:inscribevs/pages/login_page.dart';
 import 'package:inscribevs/pages/verify_page.dart';
 import 'package:inscribevs/pages/new_post_page.dart';
 import 'package:inscribevs/pages/change_bio.dart';
-import 'package:inscribevs/pages/account_settings.dart';
+import 'package:inscribevs/pages/change_password.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
       home: (token != null && JwtDecoder.isExpired(token) == false)?HomePage(token: token):LoginPage(),
       
       routes: <String,WidgetBuilder> {
-      '/verifyPage' : (BuildContext context) => verifyPage(email: AutofillHints.email),
+      '/verifypage' : (BuildContext context) => verifyPage(email: AutofillHints.email),
       '/loginpage' : (BuildContext context) => LoginPage(),
       '/newpostpage' : (BuildContext context) => const NewPostPage(),
       '/editprofilepage' : (BuildContext context) => const EditProfile(),
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
       '/changebiopage' : (BuildContext context) => const ChangeBio(),
       '/accountsettingspage' : (BuildContext context) => const AccountSettings(),
       '/changeusernamepage' : (BuildContext context) => const ChangeUsername(),
-      '/changepasswordpage' : (BuildContext context) => const ChangePassword()
+      '/changepasswordpage' : (BuildContext context) => const AccountSettings()
 
       
       },

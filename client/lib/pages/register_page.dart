@@ -114,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
           backgroundColor: Colors.transparent,
           content: AwesomeSnackbarContent(
             title: 'Success', 
-            message: 'Account created successfully. Be sure to verify your email', 
+            message: 'Account created successfully. Email Verification sent', 
             contentType: ContentType.success
           ),
         );
