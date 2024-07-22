@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:inscribevs/authentication/data_service.dart';
 import 'package:inscribevs/pages/home.dart';
 import 'package:inscribevs/pages/new_post_page.dart';
 import 'package:inscribevs/pages/discover_page.dart';
@@ -22,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = <Widget>[
     UserHome(),
     DiscoverPage(),
-    NewPostPage(),
     ProfilePage(),
     SettingsPage(),
   ];
@@ -40,15 +38,12 @@ class _HomePageState extends State<HomePage> {
           child: GNav(
             onTabChange: (index) {
             // Navigates to the page based on index
-              if (index != 2) {
+            
               setState(() {
                 _currentPageIndex = index;
 
-              });
-              } else {
-                index = _currentPageIndex;
-                Navigator.pushNamed(context, '/newpostpage');
-              }
+              });  
+          
             },
             backgroundColor:const Color.fromRGBO(82, 183, 136, 1),
             color:const  Color.fromRGBO(8, 28, 21, 1),
@@ -65,10 +60,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Icons.compass_calibration,
                 text: 'Discover'
                 ),
-              GButton(
-                icon: Icons.add_circle,
-                text: 'New Post',
-                ),
+
               GButton(
                 icon: Icons.person,
                 text: 'Profile',
@@ -80,7 +72,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),   
+      ),
+
+      
+     
     );
   }
 }

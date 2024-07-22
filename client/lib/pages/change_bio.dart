@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inscribevs/authentication/data_service.dart';
 import 'package:inscribevs/components/login/elevated_button.dart';
-import 'package:flutter_quill/flutter_quill.dart';
+// import 'package:flutter_quill/flutter_quill.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -61,7 +61,6 @@ class ChangeBio extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-          
               const SizedBox(height: 25),
           
               SizedBox(

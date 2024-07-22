@@ -50,92 +50,98 @@ class ChangePassword extends StatelessWidget {
     }
 
     }
-    return Scaffold(
-
-      backgroundColor: Color.fromARGB(255, 216, 243, 220),
-      appBar: TopBar(title: 'Update Password'),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 25),
-            
-            MyTextField(
-              controller: currentPasswordController, 
-              errorMsg: 'Please enter your current password', 
-              hintText: 'Current Password', 
-              obscureText: true, 
-              isEmailField: false, 
-              isUsernameField: false, 
-              isPasswordField: true
-            ),
-        
-            const SizedBox(height: 10),
-
-             MyTextField(
-              controller: newPasswordController, 
-              errorMsg: 'Please enter your new password', 
-              hintText: 'New Password', 
-              obscureText: true, 
-              isEmailField: false, 
-              isUsernameField: false, 
-              isPasswordField: true
-            ),
-        
-            const SizedBox(height: 10),
-        
-        
-            SizedBox(
-              width: 300, 
-              child: TextFormField(
-                controller: confirmPasswordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                errorMaxLines: 2,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey)
-                ),
-                fillColor: const Color.fromARGB(255, 255, 255, 255),
-                filled: true,
-                hintText: 'Confirm Password',
-                hintStyle: TextStyle(color: Colors.grey[500]),
+    return Form(
+      child: Scaffold(
+      
+        backgroundColor: Color.fromARGB(255, 216, 243, 220),
+        appBar: TopBar(title: 'Update Password'),
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 25),
+              
+              MyTextField(
+                controller: currentPasswordController, 
+                errorMsg: 'Please enter your current password', 
+                hintText: 'Current Password', 
+                obscureText: true, 
+                isEmailField: false, 
+                isUsernameField: false, 
+                isPasswordField: true,
+                 isTakenErr: false,
+                        Takenerr: '',
               ),
-                validator: (value) {
-                  if (value == null || value.isEmpty){
-                      return '• Confirm Password is required and cannot be a whitespace';
-                  }
-        
-                  if (value.toString().length < 8)
-                  {
-                    return "• Confirm Password must contain at least 8 letters";
-                  }
-        
-                  if(value.toString().length > 64)
-                  {
-                    return "• Confirm Password must not exceed 64 characters";
-                  }
-        
-                  if (value.toString() != newPasswordController.text)
-                  {
-                      return "• Passwords do not match";
-                  }
-                  return null;
-                },
-              ),
-            ),
-        
+          
               const SizedBox(height: 10),
-        
-              ElevatedButtonWithoutIcon(labelText: 'Update Password',
-               onPressed: _changePassword)
-          ],
+      
+               MyTextField(
+                controller: newPasswordController, 
+                errorMsg: 'Please enter your new password', 
+                hintText: 'New Password', 
+                obscureText: true, 
+                isEmailField: false, 
+                isUsernameField: false, 
+                isPasswordField: true,
+                isTakenErr: false,
+                Takenerr: '',
+              ),
+          
+              const SizedBox(height: 10),
+          
+          
+              SizedBox(
+                width: 300, 
+                child: TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                  errorMaxLines: 2,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey)
+                  ),
+                  fillColor: const Color.fromARGB(255, 255, 255, 255),
+                  filled: true,
+                  hintText: 'Confirm Password',
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty){
+                        return '• Confirm Password is required and cannot be a whitespace';
+                    }
+          
+                    if (value.toString().length < 8)
+                    {
+                      return "• Confirm Password must contain at least 8 letters";
+                    }
+          
+                    if(value.toString().length > 64)
+                    {
+                      return "• Confirm Password must not exceed 64 characters";
+                    }
+          
+                    if (value.toString() != newPasswordController.text)
+                    {
+                        return "• Passwords do not match";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+          
+                const SizedBox(height: 10),
+          
+                ElevatedButtonWithoutIcon(labelText: 'Update Password',
+                 onPressed: _changePassword)
+            ],
+          ),
         ),
+      
       ),
-
     );
   }
 }

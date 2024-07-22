@@ -81,7 +81,9 @@ class ChangeName extends StatelessWidget {
             obscureText: false, 
             isEmailField: false, 
             isUsernameField: false, 
-            isPasswordField: false),
+            isPasswordField: false,
+            isTakenErr: false,
+            Takenerr: '',),
             const SizedBox(height: 10),
         
             MyTextField(
@@ -91,7 +93,10 @@ class ChangeName extends StatelessWidget {
             obscureText: false, 
             isEmailField: false, 
             isUsernameField: false, 
-            isPasswordField: false),
+            isPasswordField: false,
+            isTakenErr: false,
+            Takenerr: ''
+            ),
         
           const SizedBox(height: 20),
         

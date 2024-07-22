@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:inscribevs/components/login/my_forgotpasswordbutton.dart';
@@ -32,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   final secureStorage = DataService.getInstance;
 
   //Holds the values types in by the user
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -73,9 +75,23 @@ class _LoginPageState extends State<LoginPage> {
 
         // print('Registration successful: Token: ${token}');
 
-      }
-      else{
-        print('Registration failed: ${response.body}');
+      } else {
+        print('Login failed: ${response.body}');
+        final responseData = jsonDecode(response.body);
+        String error =responseData['message'];
+
+        var snackbar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Error', 
+            message: error, 
+            contentType: ContentType.failure
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
       }
 
   }
@@ -111,30 +127,46 @@ class _LoginPageState extends State<LoginPage> {
 
                   //username text field
                   const SizedBox(height:20),
-                  MyLoginTextField(
+
+                  Form(
+                    key: _form,
+                    child: Column(children: [
+                      MyLoginTextField(
                       controller: usernameController,
                       obscureText: false,
-                      hintText: 'username',
+                      hintText: 'Username',
                       isUsernameField: true,
                       isPasswordField: false,            
-                  ),
+                      ),
            
            
                   //password text field
-                  const SizedBox(height: 10),
-                  MyLoginTextField(
-                      controller: passwordController,
-                      obscureText: false,
-                      hintText: 'password',
-                      isUsernameField: false,
-                      isPasswordField: true,            
+                        const SizedBox(height: 10),
+                        MyLoginTextField(
+                            controller: passwordController,
+                            obscureText: true,
+                            hintText: 'Password',
+                            isUsernameField: false,
+                            isPasswordField: true,            
+                        ),
+                    ],)
                   ),
+                  
+                  
 
                   const SizedBox(height: 10),
                   ForgotPasswordbutton(),
 
                   const SizedBox(height: 20),
-                  MyLoginButton(onPressed: _login),
+                  MyLoginButton(
+                    onPressed: () {
+                      if (_form.currentState!.validate()) {
+                        print("Login Success");
+                        _login();
+                      }
+                       
+                    }
+                  ),
 
                   const SizedBox(height: 10),
                   Signupbutton(),
