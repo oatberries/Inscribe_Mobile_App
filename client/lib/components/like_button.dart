@@ -3,13 +3,13 @@ import 'package:inscribevs/authentication/data_service.dart';
 import 'package:like_button/like_button.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:inscribevs/globals.dart' as globals;
 
 class LikeButtonWidget extends StatefulWidget {
- final bool isLiked;
  final int likeCount;
  final postId;
 
-  const LikeButtonWidget({required this.isLiked, required this.likeCount, required this.postId, super.key});
+  LikeButtonWidget({required this.likeCount, required this.postId, super.key});
 
   @override
   State<LikeButtonWidget> createState() => _LikeButtonWidgetState();
@@ -17,13 +17,15 @@ class LikeButtonWidget extends StatefulWidget {
 
 class _LikeButtonWidgetState extends State<LikeButtonWidget> {
 
+  //bool hasLiked = false;
+
   Future<void> LikeSetter(bool liked) async {
     DataService secureStorage = DataService.getInstance;
     String token = await secureStorage.read('token');
     
 
     if (liked == false) {
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/like-post';
+      String URL = '${globals.base_url}/posts/${widget.postId}/like';
       var response = await http.post(
         Uri.parse(URL),
         headers: {
@@ -38,13 +40,16 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
         print("/n Sucessfully liked post! ${responseData}");
+        // setState(() {
+        //   hasLiked = true;
+        // });
       }
       else {
         print(" liked post no successful! ${response.body}");
       }
       
     } else {
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/unlike-post';
+       String URL = '${globals.base_url}/posts/${widget.postId}/unlike';
 
       var response = await http.post(
         Uri.parse(URL),
@@ -60,6 +65,9 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
       if (response.statusCode == 200) {
         var responseData = utf8.decode(response.bodyBytes);
         print("/n Sucessfully unliked post! ${responseData}");
+        //  setState(() {
+        //   hasLiked = false;
+        // });
       }
       else {
         var responseData = utf8.decode(response.bodyBytes);
@@ -72,14 +80,14 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
   // bool isLiked = this.isLiked;
   @override
   Widget build(BuildContext context) {
-    bool isLike = widget.isLiked;
+    bool isLike = false;
     int likeCounter = widget.likeCount;
     return  LikeButton(
       size: 40,
-      isLiked: widget.isLiked,
+      isLiked: isLike,
       likeCount: widget.likeCount,
       likeBuilder: (isLiked) {
-        final color = isLiked? Colors.red : Colors.grey;
+        final color = isLiked ? Colors.red : Colors.grey;
         return Icon(Icons.favorite, color: color, size: 20);
       },
       countBuilder: (count, isLiked, text) {
@@ -87,18 +95,14 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
         return Text(text, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold));
       },
       onTap: (isLiked) async {
+       
+       
+        isLike = !isLiked;
+        likeCounter += isLike? 1 : - 1;
 
-       // serverRequest
-      
+       LikeSetter(isLiked);
 
-
-      LikeSetter(isLiked);
-      isLike = !isLiked;
-
-        
-        likeCounter += isLiked ? 1 : - 1;
-
-        return !isLiked;
+        return isLike;
 
       },
     );

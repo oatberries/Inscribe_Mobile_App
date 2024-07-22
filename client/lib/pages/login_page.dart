@@ -8,6 +8,7 @@ import 'package:inscribevs/components/login/my_loginbutton.dart';
 import 'package:inscribevs/components/login/my_signupbutton.dart';
 import 'package:inscribevs/components/login/my_logintextfield.dart';
 import 'package:inscribevs/pages/home_page.dart';
+import 'package:inscribevs/globals.dart' as globals;
 
 
 //class LoginScreen extends StatefulWidget{
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       final String password = passwordController.text;
 
       //API endpoint url
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/auth/login';
+      String URL = '${globals.base_url}/auth/login';
 
       //Call the API endpoint 
       final response = await http.post(
@@ -170,19 +171,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 10),
                   Signupbutton(),
-                  /*
-                  //Sign in button
-                  const SizedBox(height: 10),
-                  MyLoginButton(onPressed: _login),
-
-                  //Forgot Password?
-                  const SizedBox(height:10),
-                  ForgotPasswordbutton(),
-
-                  //sign up button
-                  //const SizedBox(height: 10),
-                  Signupbutton(),
-                  */
                   ],
                 ),
               ),

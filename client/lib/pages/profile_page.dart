@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:inscribevs/authentication/data_service.dart';
@@ -6,6 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:inscribevs/components/inscribe_post.dart';
 import 'package:inscribevs/components/login/elevated_button.dart';
 import 'package:inscribevs/model/profileModel.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
+import 'package:inscribevs/globals.dart' as globals;
 // import 'package:inscribevs/components/top_bar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,17 +21,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int follower_count = 0;
+  int following_count = 0;
+  List followers = [];
+  List following = [];
   int _page = 1;
   int _limit = 10;
   bool _firstLoadingRunning = false;
-  bool _hasNextPage = true;
-  bool _isLoadMoreRunning = false;
+  bool _hasMorePages = false;
+  bool _isLoadingMore = false;
   List posts = [];
   bool circular = true;
   bool loading = true;
   final secureStorage = DataService.getInstance;
   ProfileModel profileModel = ProfileModel();
-  late ScrollController _controller;
+  final ScrollController scrollController = ScrollController();
    
 
   @override
@@ -38,22 +47,84 @@ class _ProfilePageState extends State<ProfilePage> {
 
     super.initState();
     _getUserInfo();
-    _getPostsFirst();
-    _controller = ScrollController()..addListener(_loadMorePosts);
+    _getFollowers();
+    _getFollowing();
+    fetchUserPosts();
+    // _getPostsFirst();
+    scrollController.addListener(_scrollListener);
    }
+
+
+   Future <void> _scrollListener() async{
+    if(_isLoadingMore) return;
+    if(scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+
+      print("call");
+      setState(() {
+        _isLoadingMore = true;
+      });
+      _page = _page + 1;
+      await fetchUserPosts();
+      setState(() {
+        _isLoadingMore = false;
+      });
+
+    } 
+   }
+
+
+    Future<void> fetchUserPosts() async {
+
+      String token = await secureStorage.read('token');
+      var decodedToken = JwtDecoder.decode(token);
+      String userId = decodedToken['userId'];
+
+      String URL = '${globals.base_url}/users/${userId}/posts';
+
+      final response = await http.get(
+        Uri.parse("$URL?page=$_page&limit$_limit"),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+
+        final responseData = json.decode(response.body);
+        print("\n ResponseData: ${responseData} \n");
+        final postsData = responseData["data"];
+        print("\n PostsData: ${postsData} \n");
+        setState(() {
+          posts = posts + postsData["posts"];
+          if (_page == postsData["pages"])
+          {
+            _hasMorePages = false;
+          }
+        print("\n Post List: ${posts} \n");
+        });
+      } else {
+        print("\n Unable to fetch posts: \n ${response.body}\n");
+      }
+      
+
+    }
+
     void _getUserInfo() async{
       setState(() {
         _firstLoadingRunning = true;
       });
 
       String token = await secureStorage.read('token');
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/get-user-info';
+      var decodedToken = JwtDecoder.decode(token);
+      String userId = decodedToken['userId'];
+      
+      print("User ID: ${userId}");
+      String URL = '${globals.base_url}/users/${userId}';
 
       final response = await http.get(
         Uri.parse(URL),
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
         },
       );
 
@@ -61,104 +132,67 @@ class _ProfilePageState extends State<ProfilePage> {
 
         final responseData = jsonDecode(response.body);
         setState(() {
-          profileModel = ProfileModel.fromJson(responseData["data"]);
+         profileModel = ProfileModel.fromJson(responseData["data"]);
           circular = false;
         });
       
         print("Grabbing user info successful: ${responseData}");
       }
       else {
-        print("Grabbing user info successful: ${response.body}"); 
+        print("Grabbing user info unsuccessful: ${response.body}"); 
       }
       
   }
 
-  void _getPostsFirst() async {
-    setState(() {
-      _firstLoadingRunning = true;
-    });
-    String token = await secureStorage.read('token');
+  void _getFollowers() async {
 
-    const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/get-posts';
-    try {
+     String token = await secureStorage.read('token');
+      var decodedToken = JwtDecoder.decode(token);
+      String userId = decodedToken['userId'];
+
+      String URL = '${globals.base_url}/users/${userId}/followers';
+
       final response = await http.get(
-      Uri.parse("$URL?page=$_page&limit$_limit"),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
+        Uri.parse(URL),
+       headers: {
+          "Content-Type": "application/json",
         },
       );
-
-      final responseData = jsonDecode(response.body);
-      final postList = responseData["data"];
-      setState(() {
-        posts = postList;
-        print("List of Posts: ${posts}");
-      });
-
-    } catch (error) {
-      if (kDebugMode) {
-        print("Something went wrong");
-      }
-    }
-
-    setState(() {
-      _firstLoadingRunning = false;
-    });
     
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print("Successfully obtained followers: ${responseData}");
+        follower_count = responseData["data"]["numberOfFollowers"];
+      } else {
+        print("Could not obtained followers: ${response.body}");
+      }
   }
 
-    void _loadMorePosts() async {
-      String token = await secureStorage.read('token');
 
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/get-posts';
-      if (_hasNextPage == true &&
-        _firstLoadingRunning == false && _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 300
-        ) {
+  void _getFollowing() async {
 
-            setState(() {
-              _isLoadMoreRunning = true;
-            });
+     String token = await secureStorage.read('token');
+      var decodedToken = JwtDecoder.decode(token);
+      String userId = decodedToken['userId'];
 
-          _page += 1;
+      String URL = '${globals.base_url}/users/${userId}/following';
 
-          try {
-            final response = await http.get(
-            Uri.parse("$URL?page=$_page&limit$_limit"),
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer $token"
-              },
-            );
-
-            final responseData = jsonDecode(response.body);
-            final postList = responseData["data"] as List;
-
-            if (postList.isNotEmpty) {
-              setState(() {
-              posts.addAll(postList);
-              //print("List of Posts: ${posts}");
-              });
-            } else {
-              setState(() {
-                _hasNextPage = false;
-              });
-            }
-           
-
-          } catch (error) {
-            if (kDebugMode) {
-              print("${error}");
-            }
-          }
-          
-
-            setState(() {
-              _isLoadMoreRunning = false;
-            });
+      final response = await http.get(
+        Uri.parse(URL),
+       headers: {
+          "Content-Type": "application/json",
+        },
+      );
+    
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print("Successfully obtained following: ${responseData}");
+        following_count = responseData["data"]["numberOfFollowing"];
+        followers = responseData["data"]["following"] as List;
+      } else {
+        print("Could not obtained following: ${response.body}");
       }
-    }
+  }
    
   @override
   Widget build(BuildContext context) {
@@ -177,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
         // appBar: TopBar(title: '${profileModel.username}'),
         child:SingleChildScrollView(
           
-          controller: _controller,
+          controller: scrollController,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
@@ -242,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           //// Followers Button
                         // ToDo Implement Followers List
                           Text(
-                            "${profileModel.follower_count}",
+                            "${follower_count}",
                              style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold
                             )
@@ -262,7 +296,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Column(
                         children: [
                           Text(
-                            "${profileModel.following_count}",
+                            "${following_count}",
                            style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold
                             )
@@ -283,8 +317,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: ElevatedButtonWithoutIcon(
-                        labelText: 'Update Bio', 
+                        labelText: 'Update Profile', 
                         onPressed: () {
+                          // Update Profile
                           Navigator.pushNamed(context, '/changebiopage');
                         }),
                     ),
@@ -304,59 +339,43 @@ class _ProfilePageState extends State<ProfilePage> {
                    
                     const SizedBox(height: 12),
                      // List view or Posts
-                   _firstLoadingRunning? const Center(
-                      child: CircularProgressIndicator()): Column(children: [
+                     
+                  //  _firstLoadingRunning? const Center(
+                  //     child: CircularProgressIndicator()): 
+                  
+                  
+                  Column(children: [
                               
-                    // Lists of Posts in form of Cards    
+                    //Lists of Posts in form of Cards    
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: posts.length,
+                      itemCount: _isLoadingMore ? posts.length + 1 : posts.length,
                       itemBuilder: (_, index) {
-                        return Card(
+                        if (index < posts.length) {
+                          return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                          child: InscribePost(updateStartPage: () {setState(() {});}, username: posts[index]['username'], post_content: posts[index]['post_content'], num_of_likes: posts[index]['number_of_likes'], did_i_like_post: posts[index]['did_i_like_post'], postId: posts[index]['_id'],)
-                          // child: ListTile(
-                          //   tileColor: Color.fromRGBO(183, 228, 199,1),
-                          //   title: Text(posts[index]['username']),
-                          //   subtitle: Text(posts[index]['post_content']),
-                          // ),
-                        );
+                          child: InscribePost(updateStartPage: () {setState(() {
+                            
+                          });},username: posts[index]['username'], postId: posts[index]['_id'], num_of_likes: posts[index]['likesCount'], post_content: posts[index]['content'])
+                         
+                         );
+                        } else {
+                          return Center(child: CircularProgressIndicator(),);
+                        }
                       },
                      
                     ),
-                    // Loading indicator for the posts
-                    if (_isLoadMoreRunning == true)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 40),
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      ),
+                    // // Loading indicator for the posts
+                    // if (_isLoadMoreRunning == true)
+                    //   const Padding(
+                    //     padding: EdgeInsets.only(top: 10, bottom: 40),
+                    //     child: Center(
+                    //       child: CircularProgressIndicator.adaptive(),
+                    //     ),
+                    //   ),
                     
-                    // If there are no more pages to load
-                    if (_hasNextPage == false)
-                      // if the user has no posts
-                      if (posts.isEmpty)
-                      Container(
-                        padding: const EdgeInsets.only(top: 30, bottom: 40),
-                        color:const Color.fromARGB(255, 216, 243, 220),
-                        child: Column(children: [
-                          Icon(Icons.emoji_emotions_outlined),
-                          const Text("You haven't created a post yet")
-                        ],),
-                      )
-                    
-                      else
-                      // if there are no more posts to be loaded from the api
-                      Container(
-                        padding: const EdgeInsets.only(top: 30, bottom: 40),
-                        color:const Color.fromARGB(255, 216, 243, 220),
-                        child: Column(children: [
-                          Icon(Icons.emoji_emotions_outlined),
-                          const Text("You have reach the end of the your posts")
-                        ],),
-                      )
+                    // // If there are no more pages to loa
                   
                   ],
                   ),

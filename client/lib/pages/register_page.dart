@@ -7,6 +7,8 @@ import 'package:inscribevs/components/register/my_textfield.dart';
 import 'package:inscribevs/pages/login_page.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:inscribevs/pages/profile_page.dart';
+import 'package:inscribevs/pages/verify_page.dart';
+import 'package:inscribevs/globals.dart' as globals;
 
 
 class RegisterPage extends StatefulWidget {
@@ -79,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
       final String confirmPassword = confirmPasswordController.text;
 
       //API endpoint url
-      const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/auth/register';
+      String URL = '${globals.base_url}/auth/register';
 
       //Call the API endpoint 
       final response = await http.post(
@@ -94,32 +96,17 @@ class _RegisterPageState extends State<RegisterPage> {
           'username' : username,
           'password': password,
           'confirm_password': confirmPassword,
-          'terms': true
+          //'terms': true
         })
       );
 
       //if the response is ok
       if (response.statusCode == 201){
 
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => verifyPage(email: emailController.text)));
-        Navigator.pushReplacementNamed(context, '/loginpage');
-
+        Navigator.push(context, MaterialPageRoute(builder: (context) => verifyPage(email: emailController.text)));
+       
         final responseData = jsonDecode(response.body);
         print('Registration successful: ${responseData}');
-
-        
-        var snackbar = SnackBar(
-          elevation: 0,
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          content: AwesomeSnackbarContent(
-            title: 'Success', 
-            message: 'Account created successfully. Email Verification sent', 
-            contentType: ContentType.success
-          ),
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
       }
       else{
@@ -129,7 +116,6 @@ class _RegisterPageState extends State<RegisterPage> {
         List errorList = responseData['errors'] as List;
         emailErrorList = errorList.where((element) => element['field'] == 'email').toList();
         userNameErrorList = errorList.where((element) => element['field'] == 'username').toList();
-        
         
 
         print('Registration failed: ${responseData}');
@@ -183,8 +169,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 child: Column(
                   children: [
-          
-    
                    
                    // First Name
                     MyTextField(
@@ -334,10 +318,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                         const Text('Already registered?'),
-    
-    
-    
-                         const SizedBox(width: 4),
+
+                        const SizedBox(width: 4),
                           TextButton(
                               onPressed: (){
                               Navigator.push(context,
