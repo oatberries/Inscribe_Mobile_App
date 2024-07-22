@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:inscribevs/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -17,6 +16,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>{
   @override
   void dispose(){
     emailController.dispose();
+    super.dispose();
   }
 
   Future<String> passwordReset(String email) async {

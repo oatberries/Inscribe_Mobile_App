@@ -10,7 +10,16 @@ class UserHome extends StatefulWidget {
 class _UserHomeState extends State<UserHome> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+
+     floatingActionButton: FloatingActionButton.small(
+          backgroundColor: const Color.fromRGBO(82, 183, 136, 1),
+          onPressed: (){
+             Navigator.pushNamed(context, '/newpostpage').then((_) => setState(() {}));
+          },
+          child: const Icon(Icons.add, color: Colors.white, size: 28),
+          ),   
+      
       body: Center(
       child: Text(
         'Home'

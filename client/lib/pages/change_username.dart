@@ -60,7 +60,10 @@ class ChangeUsername extends StatelessWidget {
             obscureText: false, 
             isEmailField: false, 
             isUsernameField: true, 
-            isPasswordField: false),
+            isPasswordField: false,
+            isTakenErr: false,
+            Takenerr: '',
+            ),
         
             const SizedBox(height: 10),
         

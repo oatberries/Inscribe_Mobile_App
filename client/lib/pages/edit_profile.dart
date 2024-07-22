@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:inscribevs/authentication/data_service.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:inscribevs/components/list_view_profile_buttons.dart';
 
 class EditProfile extends StatefulWidget {

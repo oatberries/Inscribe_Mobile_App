@@ -6,56 +6,59 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class NewPostPage extends StatefulWidget {
+class EditPostPage extends StatefulWidget {
+  final postId;
   
-  const NewPostPage({super.key});
+  const EditPostPage({required this.postId, super.key});
+
   @override
-  State<NewPostPage> createState() => _NewPostPageState();
+  State<EditPostPage> createState() => _EditPostPageState();
 }
 
-class _NewPostPageState extends State<NewPostPage> {
-
+class _EditPostPageState extends State<EditPostPage> {
   final secureStorage = DataService.getInstance;
+
   String content = '';
-   
-  
-  Future <void> _createNewPost() async{
+
+  Future <void> _editPost() async{
 
     String myToken = await secureStorage.read('token');
-    const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/new-post';
+    const String URL = 'https://inscribed-22337aee4c1b.herokuapp.com/api/user/update-post';
 
 
-    final response = await http.post(
+    final response = await http.patch(
       Uri.parse(URL),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $myToken"
       },
       body: json.encode(<String,dynamic> {
+        'postId' : '${widget.postId}',
         'content' : '$content'
       }),
     );
 
     final responseData = jsonDecode(response.body);
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       Navigator.of(context).pop();
-      print('New Post Created Successfully: ${responseData}');
+      print('Update Post Created Successfully: ${responseData}');
       var snackbar = SnackBar(
           elevation: 0,
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.transparent,
           content: AwesomeSnackbarContent(
-            title: 'New Post Created', 
-            message: 'Post has been created successfully', 
+            title: 'Success', 
+            message: 'Successfully Update Post', 
             contentType: ContentType.success
           ),
         );
 
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        Navigator.of(context).pop();
 
     } else {
-      print('Registration failed: ${responseData}');
+      print('Edit Post Error: ${responseData}');
       var snackbar = SnackBar(
           elevation: 0,
           behavior: SnackBarBehavior.floating,
@@ -70,6 +73,7 @@ class _NewPostPageState extends State<NewPostPage> {
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
     }
   }
+
   @override
   Widget build(BuildContext context) { 
   
@@ -80,7 +84,7 @@ class _NewPostPageState extends State<NewPostPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Are you sure?'),
-            content: const Text('You will lose your post content if you leave this page.'),
+            content: const Text('Your content will be lost if you leave this page'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -115,7 +119,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
         // Title of New Post Page
         title: const Text(
-          'Create a New Post',
+          'Edit Post',
           style: TextStyle(
             fontSize: 18,
           ),
@@ -136,7 +140,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   if (!postContent.isEmpty && postContent.length < 250) {
                     print(postContent);
                     content = _controller.document.toPlainText().trim();
-                    _createNewPost();
+                    _editPost();
                   } else {
                     // display errors
                     print("error");
@@ -177,7 +181,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   ),
                 ),
                 child: const Text(
-                  'Post',
+                  'Update',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 13
@@ -204,7 +208,7 @@ class _NewPostPageState extends State<NewPostPage> {
             onPressed: () async{
                 final bool shouldPop = await _showBackDialog() ?? false;
                 if (context.mounted  && shouldPop) {
-                  Navigator.pop(context);
+                  Navigator.of(context);
                 }
              
             },
@@ -230,7 +234,7 @@ class _NewPostPageState extends State<NewPostPage> {
             // Rich Text Editor
             child: QuillEditor.basic(
               configurations: QuillEditorConfigurations(
-                placeholder: 'Add content here...',
+                placeholder: 'Edit post content here...',
                 scrollable: true,
                 controller: _controller
                 ),

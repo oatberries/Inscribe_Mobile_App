@@ -10,6 +10,10 @@ class MyTextField extends StatelessWidget {
   final bool isPasswordField;
   final bool isUsernameField;
   final bool obscureText;
+  final bool isTakenErr;
+  final String Takenerr;
+
+  
 
   const MyTextField({
     super.key,
@@ -19,7 +23,9 @@ class MyTextField extends StatelessWidget {
     required this.obscureText,
     required this.isEmailField,
     required this.isUsernameField,
-    required this.isPasswordField
+    required this.isPasswordField,
+    required this.Takenerr,
+    required this.isTakenErr,
 
   });
   
@@ -27,9 +33,12 @@ class MyTextField extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+    
     return SizedBox(
       width: 300,
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        
         controller: controller,
         obscureText: obscureText,
         validator: (value) {
@@ -51,6 +60,10 @@ class MyTextField extends StatelessWidget {
             if(!emailValid)
             {
               return "• Invalid email format";
+            }
+
+            if(isTakenErr) {
+              return '• ${Takenerr}';
             }
           }
           else if (isPasswordField) {
@@ -82,6 +95,7 @@ class MyTextField extends StatelessWidget {
                 errMsg += '• Password must contain a special character.\n';
               }
 
+
               // If there is no errors
               if (errMsg.isEmpty)
               {
@@ -89,13 +103,6 @@ class MyTextField extends StatelessWidget {
               }
 
               return errMsg;
-              // final bool validPassword = RegExp(
-              //   r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&_-]{8,}$")
-              //   .hasMatch(passwordStr);
-
-              // if (!validPassword)
-              // {
-              //   return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
           }
           else if (isUsernameField)
           {
@@ -108,6 +115,10 @@ class MyTextField extends StatelessWidget {
 
             if (!validField){
               return '• Username must start with a letter and can only contain letters, numbers, hyphens, and underscores';
+            }
+
+            if(isTakenErr) {
+              return '• ${Takenerr}';
             }
             
           }

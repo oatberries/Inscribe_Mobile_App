@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:inscribevs/authentication/data_service.dart';
-import 'package:inscribevs/pages/edit_profile.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -128,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Colors.white,
                     ),
                     label: Text(
-                      'Account Settings',
+                      'Change Password',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16
