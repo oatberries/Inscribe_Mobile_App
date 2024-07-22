@@ -120,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   height: 50,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/accountsettingspage');
+                      Navigator.pushNamed(context, '/changepasswordpage');
                     }, 
                     icon: Icon(
                       Icons.lock_outline,

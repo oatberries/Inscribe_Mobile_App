@@ -4,20 +4,51 @@ import 'package:inscribevs/components/login/elevated_button.dart';
 import 'package:inscribevs/components/register/my_textfield.dart';
 import 'package:inscribevs/components/top_bar.dart';
 import 'dart:convert';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:http/http.dart' as http;
 
-class ChangePassword extends StatelessWidget {
-  const ChangePassword({super.key});
+
+class AccountSettings extends StatefulWidget {
+  const AccountSettings({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<AccountSettings> createState() => _AccountSettingsState();
+}
+
+class _AccountSettingsState extends State<AccountSettings> {
+
+    bool isValid = false;
+    bool hasCurrPassErr = false;
+    List CurrPassErrList = [];
+    String CurrPassErr = '';
+    final GlobalKey<FormState> form = GlobalKey<FormState>();
     final TextEditingController currentPasswordController = TextEditingController();
     final TextEditingController newPasswordController = TextEditingController();
     final TextEditingController confirmPasswordController = TextEditingController();
 
+
+    void onChanged() {
+    setState(() {
+      isValid = form.currentState!.validate();
+      hasCurrPassErr = false;
+    });
+    
+  }
+
+    @override
+  void dispose() {
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+
     Future<void> _changePassword() async {
 
-      final secureStorage = DataService.getInstance;
+      DataService secureStorage = DataService.getInstance;
       String token = await secureStorage.read('token');
 
       String currentPassword = currentPasswordController.text.trim();
@@ -44,52 +75,78 @@ class ChangePassword extends StatelessWidget {
     {
       final responseData = jsonDecode(response.body);
       print("Update Password is successful ${responseData}");
+         var snackbar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'Success', 
+            message: 'Password Updated!', 
+            contentType: ContentType.success
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
       Navigator.pop(context);
     } else {
       print("Update Password is unsuccessful ${response.body}");
+      final responseData = jsonDecode(response.body);
+      String error = responseData['message'];
+      
+
+      if (error.isNotEmpty || error.length != 0) {
+        hasCurrPassErr = true;
+        CurrPassErr = error;
+      }
+      print("\n Response Data Password Error List: ${error} \n");
+      print("\n Current Password Error List: ${CurrPassErr} \n");
     }
 
     }
-    return Form(
-      child: Scaffold(
-      
-        backgroundColor: Color.fromARGB(255, 216, 243, 220),
-        appBar: TopBar(title: 'Update Password'),
-        body: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 25),
-              
-              MyTextField(
+
+    
+    
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 216, 243, 220),
+      appBar: TopBar(title: 'Change Password'),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Form(
+            key: form,
+            onChanged: () {
+              onChanged();
+            },
+        
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                const SizedBox(height:25),
+            
+             MyTextField(
                 controller: currentPasswordController, 
-                errorMsg: 'Please enter your current password', 
-                hintText: 'Current Password', 
-                obscureText: true, 
+                errorMsg: 'Current Password Field cannot be empty',
+                hintText: 'Current Password', obscureText: true, 
                 isEmailField: false, 
                 isUsernameField: false, 
-                isPasswordField: true,
-                 isTakenErr: false,
-                        Takenerr: '',
-              ),
-          
-              const SizedBox(height: 10),
-      
-               MyTextField(
+                isPasswordField: true, 
+                Takenerr: CurrPassErr, isTakenErr: hasCurrPassErr),
+        
+                const SizedBox(height: 10),
+        
+              MyTextField(
                 controller: newPasswordController, 
-                errorMsg: 'Please enter your new password', 
-                hintText: 'New Password', 
-                obscureText: true, 
+                errorMsg: 'New Password Field cannot be empty', 
+                hintText: 'New Password', obscureText: true, 
                 isEmailField: false, 
                 isUsernameField: false, 
-                isPasswordField: true,
-                isTakenErr: false,
-                Takenerr: '',
-              ),
-          
-              const SizedBox(height: 10),
-          
-          
-              SizedBox(
+                isPasswordField: true, 
+                Takenerr: '', 
+                isTakenErr: false),
+
+                const SizedBox(height: 10),
+            
+                SizedBox(
                 width: 300, 
                 child: TextFormField(
                   controller: confirmPasswordController,
@@ -132,16 +189,22 @@ class ChangePassword extends StatelessWidget {
                   },
                 ),
               ),
-          
-                const SizedBox(height: 10),
-          
-                ElevatedButtonWithoutIcon(labelText: 'Update Password',
-                 onPressed: _changePassword)
-            ],
+        
+              SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: isValid? () {
+                    //async method
+                    _changePassword();
+                  } : null, 
+                  child:  Text("Update Password")
+                ),
+              ),
+              ],
+            ),
           ),
         ),
-      
-      ),
+      )
     );
   }
 }

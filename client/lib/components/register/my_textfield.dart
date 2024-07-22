@@ -33,7 +33,6 @@ class MyTextField extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    
     return SizedBox(
       width: 300,
       child: TextFormField(
@@ -95,6 +94,9 @@ class MyTextField extends StatelessWidget {
                 errMsg += '• Password must contain a special character.\n';
               }
 
+               if (isTakenErr) {
+               return '• ${Takenerr} \n';
+            }
 
               // If there is no errors
               if (errMsg.isEmpty)
