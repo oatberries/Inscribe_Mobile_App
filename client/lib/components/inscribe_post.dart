@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 // import 'package:inscribevs/pages/edit_post.dart';
 import 'package:inscribevs/globals.dart' as globals;
+import 'package:inscribevs/pages/comment_post.dart';
 
 class InscribePost extends StatefulWidget {
   final Function updateStartPage;
@@ -162,7 +163,7 @@ class _InscribePostState extends State<InscribePost> {
             IconButton(
               // Go to PostPage Comments
               onPressed: () {
-
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CommentPage(postId: widget.postId)));
               },
             alignment: Alignment.topCenter,
             icon: Icon(Icons.comment, size: 22,)),
